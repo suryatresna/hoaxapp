@@ -77,7 +77,7 @@ class DetailPageScreen extends Component {
   _listLink = function(data) {
     const { text_found } = data;
 
-    if (text_found.length > 0) {
+    if (Array.isArray(text_found)) {
       return text_found.map((obj) => {
         return (
           <Text>* [{obj.score}] {obj.link}</Text>
