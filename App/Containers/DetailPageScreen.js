@@ -60,9 +60,36 @@ class DetailPageScreen extends Component {
     navigate('LaunchScreen');
   }
 
+
+  _calcRespond = function(data) {
+
+    const { detail } = data;
+    const { final_score } = detail;
+    const scorePercent = final_score*100
+
+    if (final_score >= 0.6) {
+      return `FACT [${scorePercent}%]`
+    }
+
+    return `HOAX!! [${scorePercent}%]`
+  }
+
+  _listLink = function(data) {
+    const { text_found } = data;
+
+    if (text_found.length > 0) {
+      return text_found.map((obj) => {
+        return (
+          <Text>* [{obj.score}] {obj.link}</Text>
+        )
+      })
+    }
+  }
+
+
   render () {
 
-    const { image, calculation } =  this.props.navigation.state.params;
+    const { image, calculation, dataJson } =  this.props.navigation.state.params;
     const { isLoading } = this.state;
     const imageReady = {
       uri: image ? `data:image/jpg;base64,${image.base64}` : "../../Images/photo.jpg"
@@ -73,9 +100,13 @@ class DetailPageScreen extends Component {
       height: 230
     }
 
+    const calcResp = this._calcRespond(dataJson.data)
+    const viewListResponse = this._listLink(dataJson.data)
+
     const viewResponse = isLoading && calculation == 0 ? (
       <Text style={styles.loading}>Loading....</Text>
-    ) : <Text style={styles.calculation}>{calculation}</Text>;
+    ) : <Text style={styles.calculation}>{calcResp}</Text>;
+
 
     console.log(JSON.stringify(this.props.navigation.state.params));
     console.log(`image: ${JSON.stringify(imageReady)}`);
@@ -87,13 +118,13 @@ class DetailPageScreen extends Component {
               onPress={this._backHome.bind(this)}
 
           >
-              <Text style={styles.fontSize}> Back to Home | </Text>
+              <Text style={styles.fontSize}> Back to Home </Text>
           </TouchableOpacity>
           <TouchableOpacity
               style={styles.capture}
               onPress={this._sendImage.bind(this)}
           >
-              <Text style={styles.fontSize}> Send it! </Text>
+              <Text style={styles.fontSize}> Refresh </Text>
           </TouchableOpacity>
         </View>
         <Image source={imageReady}
@@ -101,6 +132,8 @@ class DetailPageScreen extends Component {
         <View>
           <Text style={styles.headTitle}>Hoax Calculation</Text>
           {viewResponse}
+          <Text>Detail Information:</Text>
+          {viewListResponse}
         </View>
       </ScrollView>
     )

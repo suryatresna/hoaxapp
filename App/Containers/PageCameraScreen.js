@@ -23,7 +23,7 @@ class PageCameraScreen extends Component {
 
   takePicture = async function() {
     if (this.camera) {
-      const options = { quality: 0.5, base64: true, forceUpOrientation: true};
+      const options = { quality: 0.3, base64: true, forceUpOrientation: true};
       const data = await this.camera.takePictureAsync(options)
       this._sendImage({
         uri: data.uri, // your file path string
@@ -54,7 +54,7 @@ class PageCameraScreen extends Component {
     .then((responseJson) => {
       console.log(JSON.stringify(responseJson));
       const { navigate } = this.props.navigation;
-      navigate('DetailPageScreen', {image: {...dataImage, base64}, isLoading: false, calculation: 1})
+      navigate('DetailPageScreen', {image: {...dataImage, base64}, isLoading: false, calculation: 1, dataJson: responseJson})
       this.setState({
         isLoading: false
       })
@@ -62,7 +62,8 @@ class PageCameraScreen extends Component {
   }
 
   _backHome = async function() {
-    navigate('LaunchScreen')
+    const { navigate } = this.props.navigation;
+    navigate('LaunchScreen');
   }
 
   render () {
